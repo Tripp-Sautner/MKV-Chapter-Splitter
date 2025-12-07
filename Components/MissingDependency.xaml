@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="Chapter_Splitter.Components.MissingDependency"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Chapter_Splitter.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="400">
+    <Grid Background="#7F000000">
+        <Border BorderThickness="1" Margin="2" 
+                HorizontalAlignment="Center"
+            BorderBrush="{DynamicResource some_grey}"
+            CornerRadius="5" Background="White" Width="400" Height="200">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Row="0" Source="{DynamicResource info_circleDrawingImage}" 
+                   HorizontalAlignment="Left" Margin="20,10,0,0"/>
+                <StackPanel Grid.Row="1"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Grid.RowSpan="2">
+                    <TextBlock FontSize="16" FontWeight="Bold" Text="FFmpeg Not Found"/>
+                    <Label Grid.Row="1" x:Name="DownloadFlavorText" HorizontalAlignment="Left" 
+               VerticalAlignment="Bottom" FontSize="12">
+                        <Label.Content>
+                            <TextBlock TextWrapping="Wrap">
+                            Please install FFmpeg. 
+                            <Run FontWeight="Bold" Foreground="#0000EE" Cursor="Hand" MouseUp="LinkClick_ffmpeg">Click here to go to FFmpeg website</Run>, there are a few ways to download for windows. 
+                            Once downloaded please unzip and select the path to bin below. See 
+                            <Run FontWeight="Bold" Foreground="#0000EE" Cursor="Hand" MouseUp="LinkClick_readme">this readme</Run>
+                            for more detailed instructions. This will close once FFmpeg is detected.
+                            </TextBlock>
+                        </Label.Content>
+                    </Label>
+                </StackPanel>
+                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                    <Label Content="FFmpeg Bin Path:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10" />
+                    <Grid HorizontalAlignment="Stretch"  VerticalAlignment="Center" Margin="0,-5,0,0">
+                        <TextBox x:Name="FFmpegPathInput" Height="Auto" Margin="10,0,120,0" IsReadOnly="True"
+                         TextWrapping="NoWrap" VerticalAlignment="Center" Text="" HorizontalAlignment="Stretch"
+                         TextAlignment="Right"/>
+                        <Button x:Name="BrowseButton" Content="Browse" HorizontalAlignment="Right" Margin="10,0,10,0" 
+                        VerticalAlignment="Center" Width="100"  />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

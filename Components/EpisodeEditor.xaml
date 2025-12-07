@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Chapter_Splitter.Components.EpisodeEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Chapter_Splitter.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="600">
+    <Grid Background="White">
+        <GroupBox x:Name="ChapterModifiers" IsEnabled="False" Header="Chapter Controls" VerticalAlignment="Top">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <Label Content="Number of Episodes in File: " Margin="10,10,10,0" Height="26"/>
+                    <Label Content="File Name Prefix: " Margin="10,0,10,0" Height="26"/>
+                    <Label Content="Season Number: " Margin="10,0,10,0" Height="26"/>
+                    <Label Content="Episode Start Number: " Margin="10,0,10,0" Height="26"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBox x:Name="EpisodeCount" Margin="0,10,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Right" Width="100" Height="18"/>
+                    <TextBox x:Name="ChapterPrefixInput" Margin="10,0,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Stretch" Height="18"/>
+                    <TextBox x:Name="SeasonNumber" Margin="0,0,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Right" Width="100" Height="18"/>
+                    <TextBox x:Name="EpisodeNumber" Margin="0,0,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Right" Width="100" Height="18"/>
+                </StackPanel>
+                <GroupBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="EpisodeModifiers" Header="Episode Modifiers" Margin="10,2,10,10">
+                    <StackPanel>
+                        <ComboBox x:Name="EpisodeSelector" Margin="10,10,10,0" VerticalAlignment="Top" />
+                        <StackPanel Margin="10,10,10,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="CopyChapterCount" Margin="0,0,5,0" Width="150" Height="25" Content="Autofill From Here"/>
+                            <Button x:Name="PrevEpisode" Margin="0,0,5,0" Width="150" Height="25" Content="Prev Episode"/>
+                            <Button x:Name="NextEpisode" Margin="0,0,0,0" Width="150" Height="25" Content="Next Episode"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <Label Content="Chapter Start Index: " Margin="10,10,10,0" Height="26"/>
+                                <Label Content="Chapter End Index: " Margin="10,0,10,0" Height="26"/>
+                                <Label Content="Episode Chapter Count: " Margin="10,0,10,0" Height="26"/>
+                                <Label Content="Episode Length: " Margin="10,0,10,0" Height="26"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBox x:Name="ChapterStartIndex" Margin="0,10,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Right" Width="100" Height="18"/>
+                                <TextBox x:Name="ChapterEndIndex" Margin="10,0,10,8" TextWrapping="Wrap" Text="1" HorizontalAlignment="Right" Width="100" Height="18"/>
+                                <Label x:Name="ChapterCount" Content="-" Margin="10,0,10,0" Height="26" HorizontalAlignment="Right"/>
+                                <Label x:Name="EpisodeLength" Content="-" Margin="10,0,10,0" Height="26" HorizontalAlignment="Right"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+                <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="SplitButton" Content="Split Into Episodes" HorizontalAlignment="Right" Margin="10, 0, 10, 10"  Width="150" Height="25"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

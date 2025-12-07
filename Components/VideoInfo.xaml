@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Chapter_Splitter.Components.VideoInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Chapter_Splitter.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="120" d:DesignWidth="600">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="1" Margin="2" Grid.RowSpan="3" CornerRadius="5"
+                BorderBrush="{DynamicResource some_grey}">
+            <Grid Margin="5">
+                <Image Margin="5" Source="{DynamicResource file_earmark_playDrawingImage}"/>
+            </Grid>
+        </Border>
+        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+            <Button x:Name="ResetButton" Margin="0,0,5,0"  Width="75" Height="25" Content="Reset" Click="ResetButton_Click"/>
+            <Button x:Name="FolderButton" Margin="0,0,5,0"  Width="75" Height="25" Content="Open Folder"/>
+            <Button x:Name="FileButton" Margin="0,0,5,0" Width="75" Height="25" Content="Open Video"/>
+        </StackPanel>
+        <!--<StackPanel Grid.RowSpan="1" Grid.ColumnSpan="2"  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <TextBlock Margin="5,0,0,0">Title:</TextBlock>
+            <TextBlock Margin="5,0,0,0">Length:</TextBlock>
+            <TextBlock Margin="5,0,0,0">Chapter Count:</TextBlock>
+        </StackPanel>-->
+        <StackPanel Grid.RowSpan="2"  Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <TextBlock Margin="10,5,10,0">Title:</TextBlock>
+            <TextBlock Margin="10,5,10,0">Length:</TextBlock>
+            <TextBlock Margin="10,5,10,0">Chapter Count:</TextBlock>
+        </StackPanel>
+        <StackPanel Grid.RowSpan="2"  Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock x:Name="TitleBlock" Margin="10,5,10,0" HorizontalAlignment="Right">-</TextBlock>
+            <TextBlock x:Name="LengthBlock" Margin="10,5,10,0" HorizontalAlignment="Right">-</TextBlock>
+            <TextBlock x:Name="ChapterBlock" Margin="10,5,10,0" HorizontalAlignment="Right">-</TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>
