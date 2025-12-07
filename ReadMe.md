@@ -34,3 +34,24 @@ flowchart TD
         D --> F
         E --> F["Final Episodes Organized"]
 ```
+
+# Whats happening
+
+1. Given the names the user wants this runs the following ffprobe command to get chapter data
+`ffprobe -i \"{MkvFilePath}\" -f ffmetadata -"
+- This gets all the chapter data and reads it into the system
+2. With the chapter data we just need the start and end time of each episode, this comes from the UI
+- The user selects Chapters and this gives us the time stamps
+3. Now with the timestamps we run the following command
+```c#
+                plannedCommands[i++] =
+                    $"{FFMpegExe} " +
+                    $"-i \"{SelectedMKVFullPath}\" " +
+                    $"-ss {chapters[episode.StartChapter - 1].startTimeSec} " +
+                    $"-to {chapters[episode.EndChapter - 1].endTimeSec} " +
+                    (useNvenc ? $"-c:v h264_nvenc -qp 0 -crf 0 " : "-c:v libx264 -crf 0 -preset veryslow") +
+                    $"-c:a copy \"{System.IO.Path.Combine(SelectedMKVDirectory, episode.EpisodeName)}.mkv\"";
+
+```
+- Depending if the user has "Settings > Use Nvenc" enabled we either use h264_nvenc or libx264 to reencode each episode
+4. This Generates a CLI for each episode made 
