@@ -1,4 +1,4 @@
-﻿# Chapter Splitter
+﻿# MKV Chapter Splitter
 
 0. Select FFMPEG "bin" path, (this will need to be downloaded and unzipped first)
 1. Select the MKV
@@ -13,8 +13,8 @@
 - FFMPEG https://www.ffmpeg.org/download.html
 
 # Notes
-- This will open a ffmpeg per episode to split-
-- After all is done you will see the terminal sitting there with nothing running, you can close it then
+- This will open a ffmpeg per episode to split
+- After all is done you will see the terminal sitting there with nothing running, you can then close it
 
 # Workflow
 ```mermaid
