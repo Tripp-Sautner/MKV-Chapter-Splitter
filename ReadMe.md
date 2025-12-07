@@ -15,3 +15,22 @@
 # Notes
 - This will open a ffmpeg per episode to split-
 - After all is done you will see the terminal sitting there with nothing running, you can close it then
+
+# Workflow
+```mermaid
+---
+config:
+      theme: redux
+---
+flowchart TD
+        A(["Multi-Epsode Video (MakeMkv etc..)"])
+        A --> B{"MKV Chapter Splitter"}
+        G(["FFMPEG (path to ffprobe/ffmpeg)"])
+        G --> B
+        B --> C["Split Video Into Segments"]
+        B --> D["Segments per Episode"]
+        B --> E["Name of Show, Season, Start Episode"]
+        C --> F
+        D --> F
+        E --> F["Final Episodes Organized"]
+```
