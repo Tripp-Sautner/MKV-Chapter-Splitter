@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Chapter_Splitter" 
         xmlns:comps="clr-namespace:Chapter_Splitter.Components" 
         mc:Ignorable="d" SnapsToDevicePixels="True" ResizeMode="NoResize"
-        Title="MKV Chapter Splitter" Width="637" Height="575">
+        Title="MKV Chapter Splitter" Width="637" Height="641">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,12 +14,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Margin="0,0,0,0">
-            <!--<MenuItem Header="_File">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
-            </MenuItem>-->
             <MenuItem Header="_Settings">
-                <MenuItem x:Name="NvencEncode" Header="Use Nvenc Encoding (Uncheck to use CPU)." Click="MenuItem_ToggleNvenc" IsChecked="True"/>
                 <MenuItem Header="Select FFmpeg bin path." Click="FolderBrowse_FFmpeg"/>
                 <MenuItem Header="Clear saved paths." Click="Click_ClearSettings"/>
             </MenuItem>

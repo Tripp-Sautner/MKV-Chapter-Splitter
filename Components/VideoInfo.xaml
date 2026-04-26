@@ -28,11 +28,6 @@
             <Button x:Name="FolderButton" Margin="0,0,5,0"  Width="75" Height="25" Content="Open Folder"/>
             <Button x:Name="FileButton" Margin="0,0,5,0" Width="75" Height="25" Content="Open Video"/>
         </StackPanel>
-        <!--<StackPanel Grid.RowSpan="1" Grid.ColumnSpan="2"  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left">
-            <TextBlock Margin="5,0,0,0">Title:</TextBlock>
-            <TextBlock Margin="5,0,0,0">Length:</TextBlock>
-            <TextBlock Margin="5,0,0,0">Chapter Count:</TextBlock>
-        </StackPanel>-->
         <StackPanel Grid.RowSpan="2"  Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left">
             <TextBlock Margin="10,5,10,0">Title:</TextBlock>
             <TextBlock Margin="10,5,10,0">Length:</TextBlock>

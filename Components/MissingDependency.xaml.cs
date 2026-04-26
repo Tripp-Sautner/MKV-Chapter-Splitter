@@ -16,19 +16,19 @@ namespace Chapter_Splitter.Components
 
         private void LinkClick_ffmpeg(object sender, RoutedEventArgs e)
         {
-            var psi = new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "https://www.ffmpeg.org/download.html#build-windows",
-                UseShellExecute = true
-            };
-            System.Diagnostics.Process.Start(psi);
+            OpenWebLink("https://www.ffmpeg.org/download.html#build-windows");
         }
 
         private void LinkClick_readme(object sender, MouseButtonEventArgs e)
         {
+            OpenWebLink("https://github.com/Tripp-Sautner/MKV-Chapter-Splitter#mkv-chapter-splitter");
+        }
+
+        private static void OpenWebLink(string URL)
+        {
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://www.google.com/",
+                FileName = URL,
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
