@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace Chapter_Splitter
 {
@@ -12,7 +13,7 @@ namespace Chapter_Splitter
     {
         List<(string chapterTitle, double startTimeSec, double endTimeSec, double secondsPerUnit)> chapters = [];
         List<(string EpisodeName, int StartChapter, int EndChapter)> episodes = [];
-        List<string> episodeNames = [];
+        private List<string> episodeNames = [];
         string SelectedMKVDirectory = "";
         string SelectedMKVFullPath = "";
         bool useNvenc = true;
@@ -20,7 +21,7 @@ namespace Chapter_Splitter
         public MainWindow()
         {
             InitializeComponent();
-            this.Loaded += TestingPage_Loaded;
+            this.Loaded += Page_Loaded;
             this.MissingDependencyControl.BrowseButton.Click += FolderBrowse_FFmpeg;
             this.FileDropControl.ChooseMkv.MouseUp += Click_MkvSelect;
 
@@ -30,19 +31,22 @@ namespace Chapter_Splitter
             EpisodeEditorControl.ChapterPrefixInput.LostFocus += ChapterEntry_LostFocus;
             EpisodeEditorControl.EpisodeNumber.LostFocus += ChapterEntry_LostFocus;
             EpisodeEditorControl.SeasonNumber.LostFocus += ChapterEntry_LostFocus;
-
             EpisodeEditorControl.EpisodeSelector.SelectionChanged += EpisodeSelector_SelectionChanged;
-
             EpisodeEditorControl.PrevEpisode.Click += PrevNextEpisode_Click;
             EpisodeEditorControl.NextEpisode.Click += PrevNextEpisode_Click;
 
             // Per-Episode Control Events
             EpisodeEditorControl.CopyChapterCount.Click += Click_Autofill;
-
             EpisodeEditorControl.ChapterStartIndex.LostFocus += ChapterIndex_LostFocus;
             EpisodeEditorControl.ChapterEndIndex.LostFocus += ChapterIndex_LostFocus;
-
             EpisodeEditorControl.SplitButton.Click += SplitButton_Click;
+
+            // Custom Quality Control Events
+            EpisodeEditorControl.rBNearPerfect.Click += Update_QualityControls;
+            EpisodeEditorControl.rBHigh.Click += Update_QualityControls;
+            EpisodeEditorControl.rBStandard.Click += Update_QualityControls;
+            EpisodeEditorControl.rBCustom.Click += Update_QualityControls;
+            EpisodeEditorControl.UseNvencCheck.Click += Click_QualityNvenc;
         }
 
         private void SplitButton_Click(object sender, RoutedEventArgs e)
@@ -53,24 +57,23 @@ namespace Chapter_Splitter
 
             string[] plannedCommands = new string[episodes.Count];
             var i = 0;
-            foreach (var episode in episodes)
+            foreach (var (EpisodeName, StartChapter, EndChapter) in episodes)
             {
-                plannedOutput += $"\nEpisode: {episode.EpisodeName}.mkv, \n" +
-                    $"Chapters: {episode.StartChapter} to {episode.EndChapter}\n" +
-                    $"Time {chapters[episode.StartChapter - 1].startTimeSec} to {chapters[episode.EndChapter - 1].endTimeSec}\n";
+                plannedOutput += $"\nEpisode: {EpisodeName}.mkv, \n" +
+                    $"Chapters: {StartChapter} to {EndChapter}\n" +
+                    $"Time {chapters[StartChapter - 1].startTimeSec} to {chapters[EndChapter - 1].endTimeSec}\n";
 
                 // ffmpeg -ss [START_TIME] -i input.mkv -to [END_TIME] -c copy "output_cut_[N].mkv"
+                var qualityValue = EpisodeEditorControl.customQuality.Text;
                 plannedCommands[i++] =
                     $"{FFMpegExe} " +
                     $"-i \"{SelectedMKVFullPath}\" " +
-                    $"-ss {chapters[episode.StartChapter - 1].startTimeSec} " +
-                    $"-to {chapters[episode.EndChapter - 1].endTimeSec} " +
-                    (useNvenc ? $"-c:v h264_nvenc -qp 0 -crf 0 " : "-c:v libx264 -crf 0 -preset veryslow") +
-                    $"-c:a copy \"{System.IO.Path.Combine(SelectedMKVDirectory, episode.EpisodeName)}.mkv\"";
-
-
-                //$"-c copy \"{Path.Combine((string)DiskOutputDirectory.Content, episode.EpisodeName)}.mkv\"";
+                    $"-ss {chapters[StartChapter - 1].startTimeSec} " +
+                    $"-to {chapters[EndChapter - 1].endTimeSec} " +
+                    (useNvenc ? $"-c:v h264_nvenc -qp {qualityValue} " : $"-c:v libx264 -crf {qualityValue} -preset veryslow ") +
+                    $"-c:a copy \"{System.IO.Path.Combine(SelectedMKVDirectory, EpisodeName)}.mkv\"";
             }
+            Console.WriteLine(plannedCommands);
 
             var Output = MessageBox.Show($"Turning into episodes:\n{plannedOutput}", "Planned Output", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (Output == MessageBoxResult.Yes)
@@ -79,12 +82,12 @@ namespace Chapter_Splitter
                 {
                     //var commandToRun = plannedCommands[1];
                     // Move this to CLI tools later
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    ProcessStartInfo startInfo = new()
                     {
                         FileName = "cmd.exe", // Or "powershell.exe" for PowerShell
                         Arguments = $"/K {commandToRun}",
                         UseShellExecute = true, // Essential for showing the window
-                        CreateNoWindow = false, // Explicitly false, though true is default when UseShellExecute is false
+                        CreateNoWindow = false, // TODO probably make the windows hide and have an actual loading bar.
                         WindowStyle = ProcessWindowStyle.Normal // Ensure the window is visible
                     };
 
@@ -154,15 +157,15 @@ namespace Chapter_Splitter
             if (EpisodeEditorControl.EpisodeSelector.SelectedIndex == -1)
                 return;
 
-            var selectedEpisode = episodes[EpisodeEditorControl.EpisodeSelector.SelectedIndex];
-            EpisodeEditorControl.ChapterStartIndex.Text = selectedEpisode.StartChapter.ToString();
-            EpisodeEditorControl.ChapterEndIndex.Text = selectedEpisode.EndChapter.ToString();
+            var (_, StartChapter, EndChapter) = episodes[EpisodeEditorControl.EpisodeSelector.SelectedIndex];
+            EpisodeEditorControl.ChapterStartIndex.Text = StartChapter.ToString();
+            EpisodeEditorControl.ChapterEndIndex.Text = EndChapter.ToString();
             EpisodeEditorControl.ChapterCount.Content =
-                (selectedEpisode.EndChapter - selectedEpisode.StartChapter + 1).ToString();
+                (EndChapter - StartChapter + 1).ToString();
 
             // Calculate Duration
             double totalDurationSec = 0;
-            for (int i = selectedEpisode.StartChapter - 1; i < selectedEpisode.EndChapter; i++)
+            for (int i = StartChapter - 1; i < EndChapter; i++)
                 totalDurationSec += (chapters[i].endTimeSec - chapters[i].startTimeSec);
 
             TimeSpan timeTotal = TimeSpan.FromSeconds(totalDurationSec);
@@ -179,11 +182,10 @@ namespace Chapter_Splitter
             //
             // Warning will throw when potentially out of range.
 
-            var activeEpisode = episodes[EpisodeEditorControl.EpisodeSelector.SelectedIndex];
-            int chapterCount = activeEpisode.EndChapter - activeEpisode.StartChapter + 1;
+            var (_, StartChapter, EndChapter) = episodes[EpisodeEditorControl.EpisodeSelector.SelectedIndex];
+            int chapterCount = EndChapter - StartChapter + 1;
 
             var autoEpisodeList = new List<(string EpisodeName, int StartChapter, int EndChapter)>(episodes);
-            int startIndex = EpisodeEditorControl.EpisodeSelector.SelectedIndex;
             for (int i = EpisodeEditorControl.EpisodeSelector.SelectedIndex + 1;
                 i < autoEpisodeList.Count; i++)
             {
@@ -288,9 +290,8 @@ namespace Chapter_Splitter
             //}
         }
 
-        private void TestingPage_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            // Its not for this example
             if (!HelperFunctions.CheckFFmpegAvailability(Properties.Settings.Default.FFmpegBinPath))
                 MissingDependencyControl.Visibility = Visibility.Visible;
         }
@@ -365,9 +366,6 @@ namespace Chapter_Splitter
 
             SelectedMKVDirectory = System.IO.Path.GetDirectoryName(SelectedMkvFile);
             SelectedMKVFullPath = SelectedMkvFile;
-
-            if (string.IsNullOrEmpty(SelectedMKVDirectory) || string.IsNullOrEmpty(SelectedMKVFullPath))
-                return;
         }
 
         private void Setup_VideoInfo(string MkvFilePath)
@@ -438,7 +436,7 @@ namespace Chapter_Splitter
             {
                 if (System.IO.File.Exists(MkvFilePath))
                 {
-                    ProcessStartInfo psi = new ProcessStartInfo
+                    ProcessStartInfo psi = new()
                     {
                         FileName = MkvFilePath,
                         UseShellExecute = true // This is crucial for using default apps in modern .NET
@@ -446,6 +444,9 @@ namespace Chapter_Splitter
                     Process.Start(psi);
                 }
             };
+
+            // Setup the Quality Controls
+            Update_QualityControls(null, null);
         }
 
         private void Setup_VideoTools(string MkvFilePath)
@@ -477,10 +478,36 @@ namespace Chapter_Splitter
             return episodeName;
         }
 
-        private void MenuItem_ToggleNvenc(object sender, RoutedEventArgs e)
+        private void Update_QualityControls(object? sender, RoutedEventArgs? e)
         {
-            useNvenc = !useNvenc;
-            NvencEncode.IsCheckable = useNvenc;
+            var NearPerfect_DefaultCRFValue = "14";
+            var NearPerfect_DefaultQPValue = "15";
+
+            var High_DefaultCRFValue = "18";
+            var High_DefaultQPValue = "20";
+
+            var Standard_DefaultCRFValue = "22";
+            var Standard_DefaultQPValue = "25";
+
+            if (EpisodeEditorControl.rBNearPerfect.IsChecked == true)
+            {
+                EpisodeEditorControl.customQuality.Text = useNvenc ? NearPerfect_DefaultQPValue : NearPerfect_DefaultCRFValue;
+            }
+            else if (EpisodeEditorControl.rBHigh.IsChecked == true)
+            {
+                EpisodeEditorControl.customQuality.Text = useNvenc ? High_DefaultQPValue : High_DefaultCRFValue;
+            }
+            else if (EpisodeEditorControl.rBStandard.IsChecked == true)
+            {
+                EpisodeEditorControl.customQuality.Text = useNvenc ? Standard_DefaultQPValue : Standard_DefaultCRFValue;
+            }
+            EpisodeEditorControl.customQuality.IsEnabled = EpisodeEditorControl.rBCustom.IsChecked == true;
+        }
+
+        private void Click_QualityNvenc(object sender, RoutedEventArgs e)
+        {
+            useNvenc = EpisodeEditorControl.UseNvencCheck.IsChecked == true;
+            Update_QualityControls(sender, e);
         }
     }
 }

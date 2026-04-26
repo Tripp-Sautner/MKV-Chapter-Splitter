@@ -16,6 +16,19 @@
 - This will open a ffmpeg per episode to split-
 - After all is done you will see the terminal sitting there with nothing running, you can close it then
 
+# Re-Encoding Notes
+Re-Encoding is required since most MKV files will not "split" at the desired timestamp due to how these files are saved. They split on keystone frames which can be 1-2+ seconds ahead or behind your split time. The fix is to re-encode exactly to your desired timestamp, this creates a new issue of data size. Files will balloon in size if the encoding is lossless so there are a few options.
+
+| Quality Level | CPU `-crf` | NVENC `-qp` | Desc |
+|-|-|-|-|
+|Lossless|0|0|Causes file sizes to expand 4.5 times...|
+|Near Perfect|14|15|Near-perfect.|
+|High|18|20|Rare artifacts.|
+|Standard|22|25|Occasional visual compression.|
+
+- Generally lower = better, but lower = bigger file size
+
+
 # Workflow
 ```mermaid
 ---
